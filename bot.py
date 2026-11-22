@@ -1,3 +1,4 @@
+import os
 import requests
 from rich import print
 from statistics import mean
@@ -13,7 +14,9 @@ def human_format(num):
         return num
 
 def get_userDetail(username):
-    proxies = {"https": 'billylu2.ddns.net:3333'}
+    # Optional HTTPS proxy, e.g. host:port, set in INSTAGRAM_PROXY
+    proxy = os.environ.get("INSTAGRAM_PROXY")
+    proxies = {"https": proxy} if proxy else None
     base_url = f"https://i.instagram.com/api/v1/users/web_profile_info/?username={username}"
     headers = {
         'user-agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 105.0.0.11.118 (iPhone11,8; iOS 12_3_1; en_US; en-US; scale=2.00; 828x1792; 165586599)'
@@ -46,4 +49,4 @@ def get_userDetail(username):
         return {'Total Reach':total,'Followers':human_format(followers),'Comments':comments,'Likes':likes}
         
     except Exception as e:
-        return "getting user failed, due to '{}'".format(e.message)
+        return "getting user failed, due to '{}'".format(e)
